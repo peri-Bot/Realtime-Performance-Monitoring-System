@@ -1,9 +1,11 @@
 package metrics
 
 import (
+	"fmt"
 	"github.com/shirou/gopsutil/v4/cpu"
 	"github.com/shirou/gopsutil/v4/disk"
 	"github.com/shirou/gopsutil/v4/mem"
+	"time"
 )
 
 type ResourceUsage struct {
@@ -74,4 +76,45 @@ func CollectMetrics() (*Metrics, error) {
 		Disk:      disk,
 		Timestamp: time.Now(),
 	}, nil
+}
+
+func PrintMetrics(m *Metrics) {
+	if m == nil {
+		fmt.Println("No metrics available")
+		return
+	}
+
+	fmt.Printf("\nSystem Metrics as of %s\n", m.Timestamp.Format(time.RFC1123))
+	fmt.Println("----------------------------------------")
+
+	// CPU
+	fmt.Printf("CPU Usage: %.2f%%\n\n", m.CPU)
+
+	// Memory
+	fmt.Println("Memory:")
+	fmt.Printf("  Total: %s\n", formatBytes(m.Memory.Total))
+	fmt.Printf("  Used:  %s\n", formatBytes(m.Memory.Used))
+	fmt.Printf("  Free:  %s\n", formatBytes(m.Memory.Free))
+	fmt.Printf("  Usage: %.2f%%\n\n", m.Memory.Usage)
+
+	// Disk
+	fmt.Println("Disk:")
+	fmt.Printf("  Total: %s\n", formatBytes(m.Disk.Total))
+	fmt.Printf("  Used:  %s\n", formatBytes(m.Disk.Used))
+	fmt.Printf("  Free:  %s\n", formatBytes(m.Disk.Free))
+	fmt.Printf("  Usage: %.2f%%\n", m.Disk.Usage)
+}
+
+// formatBytes converts bytes to human readable string in KB, MB, GB, or TB
+func formatBytes(bytes uint64) string {
+	const unit = 1024
+	if bytes < unit {
+		return fmt.Sprintf("%d B", bytes)
+	}
+	div, exp := uint64(unit), 0
+	for n := bytes / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.2f %cB", float64(bytes)/float64(div), "KMGTPE"[exp])
 }
