@@ -1,0 +1,45 @@
+# Go binary files
+/bin/
+/obj/
+*.exe
+*.out
+*.test
+
+# Go dependency directories
+/vendor/
+Godeps/
+
+# Docker
+.docker/
+*.dockerfile
+docker-compose.override.yml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# AWS Credentials (don't commit credentials or sensitive data)
+.aws/
+
+# IDE and editor files (Vim, VSCode, etc.)
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables file
+.env
+
+# Build artifacts and caches
+*.cache
+*.build
+
