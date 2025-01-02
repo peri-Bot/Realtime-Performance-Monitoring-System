@@ -4,19 +4,24 @@ import (
 	"log"
 	"time"
 
+	"github.com/go-co-op/gocron"
 	"github.com/peri-Bot/Realtime-Performance-Monitoring-System/internal/metrics"
 )
 
 func main() {
-	for {
-		metric, err := metrics.CollectMetrics()
-		if err != nil {
-			log.Println("Error collecting metrics:", err)
-			continue
-		}
+	scheduler := gocron.NewScheduler(time.UTC)
 
-		metrics.PrintMetrics(metric)
+	// Schedule the CollectMetrics function to run every 10 seconds
+	scheduler.Every(1).Seconds().Do(runCronJob)
 
-		time.Sleep(5 * time.Second) // Collect metrics every 5 seconds
+	scheduler.StartBlocking() // Start the scheduler and block the main thread
+}
+
+func runCronJob() {
+	metric, err := metrics.CollectMetrics()
+	if err != nil {
+		log.Println("Error collecting metrics:", err)
+		return
 	}
+	metrics.LogMetrics(metric)
 }
