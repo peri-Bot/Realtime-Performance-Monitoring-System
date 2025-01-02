@@ -7,6 +7,7 @@ import (
 
 // LogMetrics logs metrics as a JSON string.
 func LogMetrics(metrics *Metrics) {
+
 	processedMetrics := ProcessMetrics(metrics)
 	data, err := json.MarshalIndent(processedMetrics, "", "  ")
 	if err != nil {

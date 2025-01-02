@@ -16,18 +16,18 @@ type ResourceUsage struct {
 }
 
 type Metrics struct {
-	CPU       float64       `json:"cpu_usage"` // CPU usage as percentage
+	CPU       []float64     `json:"cpu_usage"` // CPU usage as percentage
 	Memory    ResourceUsage `json:"memory"`
 	Disk      ResourceUsage `json:"disk"`
 	Timestamp time.Time     `json:"timestamp"`
 }
 
-func collectCPU() (float64, error) {
-	cpuPercentages, err := cpu.Percent(0, false)
+func collectCPU() ([]float64, error) {
+	cpuPercentages, err := cpu.Percent(0, true)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
-	return cpuPercentages[0], nil
+	return cpuPercentages, nil // Return all core percentages
 }
 
 func collectMemory() (ResourceUsage, error) {
